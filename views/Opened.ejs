@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VSCODE</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+
+<body class=" h-screen flex">
+  <!-- Left Sidebar -->
+  <div id="left" class="w-58  h-full flex-shrink-0 flex flex-col">
+    <div class="w-full h-full bg-gray-100 shadow-lg flex flex-col">
+      <!-- Sidebar Header -->
+      <div class="p-4 border-b border-black flex items-center justify-between">
+        <div class="text-left font-bold font-sans">
+          CodeWave
+        </div>
+        <div class="icons flex flex-row gap-4">
+          <svg class="w-6 h-6 text-zinc-950" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+            height="24" id="folderCreate" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M14 8H4m8 3.5v5M9.5 14h5M4 6v13a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-5.032a1 1 0 0 1-.768-.36l-1.9-2.28a1 1 0 0 0-.768-.36H5a1 1 0 0 0-1 1Z" />
+          </svg>
+
+          <svg class="w-6 h-6 text-zinc-950" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+            height="24" id="fileCreate" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M14 8H4m8 3.5v5M9.5 14h5M4 6v13a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-5.032a1 1 0 0 1-.768-.36l-1.9-2.28a1 1 0 0 0-.768-.36H5a1 1 0 0 0-1 1Z" />
+          </svg>
+
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 12h.01m6 0h.01m5.99 0h.01" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Sidebar Forms -->
+      <form action="/fileCreation" id="fileform" class="hidden">
+        <input type="text" class="ml-5 mt-3 w-44 font-medium rounded-md p-1 outline-none border border-blue-500"
+          placeholder="filename" name="filename">
+      </form>
+      <form action="/folderCreation" class="hidden" id="folderform">
+        <input type="text" class="ml-5 mt-3 w-44 rounded-md font-medium p-1 outline-none border border-blue-500"
+          placeholder="foldername" name="foldername">
+      </form>
+
+      <!-- Sidebar Body -->
+      <div class="p-4 flex-1 overflow-y-auto">
+        <% if (files && files.length> 0) { %>
+          <% files.forEach((elem)=> { %>
+            <div class="mb-3 border hover:bg-blue-400 pl-2 flex text-black gap-2 items-center">
+              <% if (elem.isDirectory()) { %>
+                <i class="ri-folder-3-fill"></i> <!-- Icon for directories -->
+                <% } else { %>
+                  <i class="ri-file-text-line"></i> <!-- Icon for files -->
+                  <% } %>
+                  <% if(elem.isDirectory()){%>
+                    <%= elem.name %>
+                   <% } else {%>
+                    <a href="/files/<%= elem.name%>"><%= elem.name%></a>   
+                    
+                   <%}%>
+            </div>
+            <% }) %>
+              <% } else { %>
+                <p>No files found.</p>
+                <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Body -->
+  <div id="right" class="overflow-hidden">
+    <div id="rightNav" class="w-30 p-2 ">
+      <div class="openedfile  bg-blue-200 w-36 p-2 border rounded-md ">
+       <%= filename%>
+       <a href="/">
+        <i class="ri-close-circle-line  hover:text-red-400 ml-3 cursor-pointer"></i>
+       </a>
+      </div>
+    </div>
+
+     <form action="/fileChange/<%= filename %>" method="post">
+      <textarea name="filedata" class="p-4 bg-red-400 w-screen h-screen font-sans outline-none text-black" placeholder="Write your code here..." id="">
+        <%= filedata %>
+      </textarea>
+      <input type="submit" value="save file" class="absolute top-4 right-5 p-2 bg-black border-rose-500 rounded-md text-white">
+    </form> 
+    
+
+  </div>
+
+
+
+
+
+
+
+
+  <script>
+
+    function TurnOnOff() {
+      var formAll = [...document.querySelectorAll('form')]
+      //  formAll.forEach(form=>form.classList.toggle('hidden'));
+      formAll.forEach((val) => {
+        val.style.display = "none";
+      })
+    }
+
+
+    var folderCreate = document.querySelector('#folderCreate');
+    folderCreate.addEventListener('click', () => {
+      TurnOnOff();
+      document.querySelector('#folderform').style.display = "initial";
+
+    })
+    var fileCreate = document.querySelector('#fileCreate');
+    fileCreate.addEventListener('click', () => {
+      TurnOnOff();
+      document.querySelector('#fileform').style.display = "initial";
+    })
+
+
+
+  </script>
+</body>
+
+</html>
